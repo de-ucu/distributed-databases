@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+    neo4j:
+        container_name: dd_homework_2_mongodb
+        image: mongo:4.4.4-bionic
+        # ports:
+            # - 7474:7474
+            # - 7473:7473
+            # - 7687:7687
+        restart: always
+        # environment:
+            # - NEO4J_AUTH=admin/password
+        # volumes:
+            # - ./init/flights.sql:/docker-entrypoint-initdb.d/1-flight.sql
+            # - ./init/hotels.sql:/docker-entrypoint-initdb.d/2-hotels.sql
+            # - ./init/accounts.sql:/docker-entrypoint-initdb.d/3-accounts.sql
+            # - ./src/transaction.sql:/sql/transaction.sql
+        # command: -c max_prepared_transactions=10

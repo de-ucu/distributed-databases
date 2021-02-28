@@ -1,4 +1,4 @@
-version: '3.1'
+version: '2.1'
 services:
     neo4j:
         container_name: dd_homework_2_neo4j
@@ -9,10 +9,21 @@ services:
             - 7687:7687
         restart: always
         environment:
-            - NEO4J_AUTH=admin/password
+            - NEO4J_AUTH=neo4j/password
         volumes:
-            - ./init/flights.sql:/docker-entrypoint-initdb.d/1-flight.sql
-            - ./init/hotels.sql:/docker-entrypoint-initdb.d/2-hotels.sql
-            - ./init/accounts.sql:/docker-entrypoint-initdb.d/3-accounts.sql
-            - ./src/transaction.sql:/sql/transaction.sql
-        command: -c max_prepared_transactions=10
+            - ./data:/import
+        healthcheck:
+            test: perl -MIO::Socket::INET -e 'exit(! defined( IO::Socket::INET->new("0.0.0.0:7687")))'
+            interval: 1s
+            timeout: 1s
+            retries: 25 
+    python:
+        container_name: dd_homework_2_python
+        build: 
+            context: .
+        volumes:
+            - ./src:/scripts
+        depends_on: 
+            neo4j:
+                condition: service_healthy
+        entrypoint: [python, /scripts/initialize.py]
